@@ -49,6 +49,18 @@
             background: rgba(255, 255, 255, 0.4);
         }
 
+        /* --- KEYFRAMES ANIMASI (RAHASIA AESTHETIC) --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Navbar */
         .navbar {
             display: flex;
@@ -62,27 +74,27 @@
             left: 0;
             width: 100%;
             z-index: 10;
+            /* Animasi Navbar: Muncul setelah delay 0.8 detik */
+            animation: fadeInUp 1s ease-out 0.8s backwards;
         }
 
-        /* --- BAGIAN LOGO (UPDATE SEJAJAR & AESTHETIC) --- */
         .logo {
             display: flex;
-            align-items: center; /* Sejajarin vertikal */
-            gap: 12px;           /* Jarak kapak ke teks */
+            align-items: center; 
+            gap: 12px;           
             cursor: pointer;
         }
 
         .logo img {
-            width: 28px;         /* Ukuran pas buat logo 32x32 */
+            width: 28px;         
             height: auto;
-            /* TRIK: Tarik naik 3px biar visualnya sejajar sama huruf kapital */
             transform: translateY(-3px); 
             transition: transform 0.3s ease;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
         .logo:hover img {
-            transform: translateY(-5px) rotate(-10px); /* Efek gerak dikit pas dihover */
+            transform: translateY(-5px) rotate(-10px); 
         }
 
         .logo span {
@@ -127,6 +139,8 @@
             text-transform: uppercase;
             letter-spacing: -3px;
             margin-left: -7px; 
+            /* Animasi Judul Utama: Muncul duluan */
+            animation: fadeInUp 1.2s cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
         }
 
         .hero-text span { font-weight: 700; }
@@ -140,6 +154,8 @@
             opacity: 0.9;
             max-width: 650px;
             padding-left: 0; 
+            /* Animasi Deskripsi: Muncul sedikit telat (delay 0.4s) */
+            animation: fadeInUp 1.2s cubic-bezier(0.2, 0.6, 0.2, 1) 0.4s backwards;
         }
 
         .hero-footer {
@@ -151,6 +167,8 @@
             left: 5%;
             right: 5%;
             z-index: 2;
+            /* Animasi Footer: Muncul paling akhir (delay 1.2s) */
+            animation: fadeInUp 1s ease-out 1.2s backwards;
         }
 
         .hero-copyright {
