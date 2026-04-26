@@ -10,311 +10,116 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* --- CSS UTAMA --- */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* --- CSS DASAR --- */
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            background-color: #000; color: #fff;
+            font-family: 'Inter', sans-serif; overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- CUSTOM SCROLLBAR --- */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            border: 2px solid transparent; 
-            background-clip: padding-box;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        /* --- KEYFRAMES ANIMASI (RAHASIA AESTHETIC) --- */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Navbar */
         .navbar {
-            display: flex;
-            justify-content: space-between;
-            padding: 40px 5%;
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            position: absolute; 
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 10;
-            /* Animasi Navbar: Muncul setelah delay 0.8 detik */
+            display: flex; justify-content: space-between;
+            padding: 40px 5%; font-size: 11px; letter-spacing: 2px;
+            text-transform: uppercase; position: absolute; 
+            top: 0; left: 0; width: 100%; z-index: 10;
             animation: fadeInUp 1s ease-out 0.8s backwards;
         }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo img { width: 28px; height: auto; }
+        .nav-links a { color: #fff; text-decoration: none; margin-left: 30px; transition: 0.3s; }
+        .nav-links a:hover { opacity: 0.5; }
 
-        .logo {
-            display: flex;
-            align-items: center; 
-            gap: 12px;           
-            cursor: pointer;
-        }
-
-        .logo img {
-            width: 28px;         
-            height: auto;
-            transform: translateY(-3px); 
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-        }
-
-        .logo:hover img {
-            transform: translateY(-5px) rotate(-10px); 
-        }
-
-        .logo span {
-            font-weight: 700;
-            letter-spacing: 1.5px;
-        }
-
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            margin-left: 30px;
-            transition: opacity 0.3s;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.5;
-        }
-
-        /* Hero Section */
         .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            padding: 0 5%;
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            position: relative; padding: 0 5%;
             background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,1) 100%), 
                         url('wall3.png') no-repeat center center;
             background-size: cover;
         }
-
-        .hero-text {
-            position: relative;
-            z-index: 2;
-            max-width: 900px;
-        }
-
         .hero-text h1 {
-            font-size: clamp(40px, 12vw, 150px);
-            line-height: 0.85;
-            font-weight: 300;
-            text-transform: uppercase;
-            letter-spacing: -3px;
-            margin-left: -7px; 
-            /* Animasi Judul Utama: Muncul duluan */
+            font-size: clamp(40px, 12vw, 150px); line-height: 0.85; font-weight: 300;
+            text-transform: uppercase; letter-spacing: -3px;
             animation: fadeInUp 1.2s cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
         }
-
         .hero-text span { font-weight: 700; }
-
         .hero-desc {
-            font-size: 16px;
-            letter-spacing: 0.5px;
-            line-height: 1.6;
-            text-transform: uppercase;
-            margin-top: 25px;
-            opacity: 0.9;
-            max-width: 650px;
-            padding-left: 0; 
-            /* Animasi Deskripsi: Muncul sedikit telat (delay 0.4s) */
+            font-size: 16px; margin-top: 25px; opacity: 0.9; text-transform: uppercase;
             animation: fadeInUp 1.2s cubic-bezier(0.2, 0.6, 0.2, 1) 0.4s backwards;
         }
 
-        .hero-footer {
-            display: flex;
-            justify-content: flex-end; 
-            align-items: flex-end;
-            position: absolute;
-            bottom: 40px;
-            left: 5%;
-            right: 5%;
-            z-index: 2;
-            /* Animasi Footer: Muncul paling akhir (delay 1.2s) */
-            animation: fadeInUp 1s ease-out 1.2s backwards;
-        }
-
-        .hero-copyright {
-            font-size: 10px;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-        }
-
-        .hero-copyright i {
-            font-size: 14px;
-        }
-
         /* --- GALLERY SECTION --- */
-        .gallery-section {
-            padding: 100px 0 50px 5%;
-            background-color: #000;
-        }
-
-        .gallery-controls {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-            padding-right: 5%;
-            margin-bottom: 20px;
-        }
-
+        .gallery-section { padding: 100px 0 50px 5%; background-color: #000; }
+        .gallery-controls { display: flex; gap: 15px; justify-content: flex-end; padding-right: 5%; margin-bottom: 20px; }
+        
         .nav-btn {
-            background: none;
-            border: 1px solid #444;
-            color: #fff;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: none; border: 1px solid #444; color: #fff;
+            width: 45px; height: 45px; border-radius: 50%; cursor: pointer;
+            transition: 0.3s; display: flex; align-items: center; justify-content: center;
         }
-
-        .nav-btn:hover {
-            background: #fff;
-            color: #000;
-            border-color: #fff;
-        }
+        .nav-btn:hover { background: #fff; color: #000; }
 
         .gallery-grid {
-            display: flex;
-            overflow-x: auto;
-            gap: 20px;
-            scroll-behavior: smooth;
-            scroll-snap-type: x mandatory;
-            padding-bottom: 30px;
-            scrollbar-width: none;
+            display: flex; overflow-x: auto; gap: 20px;
+            padding-bottom: 30px; scrollbar-width: none;
+            cursor: grab; user-select: none; scroll-behavior: smooth;
         }
+        .gallery-grid:active { cursor: grabbing; }
+        .gallery-grid::-webkit-scrollbar { display: none; }
 
-        .gallery-grid::-webkit-scrollbar {
-            display: none;
-        }
-
-        .gallery-item {
-            flex: 0 0 450px;
-            scroll-snap-align: start;
-            cursor: pointer;
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-            margin-bottom: 15px;
-            transition: transform 0.5s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(0.98);
-        }
-
-        .gallery-item h3 { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
-        .gallery-item p { font-size: 9px; color: #666; text-transform: uppercase; }
+        .gallery-wrapper { flex: 0 0 450px; cursor: pointer; }
+        .gallery-wrapper img { width: 100%; height: 500px; object-fit: cover; transition: 0.5s; pointer-events: none; }
+        .gallery-wrapper:hover img { transform: scale(0.98); }
+        .gallery-wrapper h3 { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin-top: 15px; }
+        .gallery-wrapper p { font-size: 9px; color: #666; text-transform: uppercase; margin-top: 5px; }
 
         .gallery-footer-large {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            padding-right: 5%;
-            border-top: 1px solid #222;
-            padding-top: 40px;
-            margin-top: 20px;
+            display: flex; align-items: flex-end; justify-content: space-between;
+            padding-right: 5%; border-top: 1px solid #222; padding-top: 40px;
         }
+        .page-number { font-size: clamp(30px, 5vw, 60px); font-weight: 300; }
+        .large-title { font-size: clamp(40px, 10vw, 140px); font-weight: 400; }
 
-        .page-number { 
-            font-size: clamp(30px, 5vw, 60px); 
-            font-weight: 300;
-            line-height: 1;
-            letter-spacing: 2px;
-        }
-        
-        .large-title { 
-            font-size: clamp(40px, 10vw, 140px); 
-            font-weight: 400; 
-            letter-spacing: -2px; 
-            line-height: 1;
-        }
-
-        /* --- MODAL POP-UP --- */
+        /* --- MODAL --- */
         .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
+            display: none; position: fixed; z-index: 1000;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); justify-content: center; align-items: center;
         }
-
-        .modal-content {
-            max-width: 90%;
-            max-height: 85vh;
-            object-fit: contain;
-            animation: zoom 0.3s ease;
+        .modal-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .modal-content { 
+            max-width: 90%; max-height: 90%; object-fit: contain; 
+            transition: transform 0.1s ease-out; /* Smooth transition */
+            user-select: none;
         }
-
-        @keyframes zoom {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        .close-modal { position: absolute; top: 30px; right: 40px; font-size: 35px; cursor: pointer; z-index: 1010; opacity: 0.6; }
+        .close-modal:hover { opacity: 1; }
+        .modal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: #fff; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1010; }
+        .prev-img { left: 20px; }
+        .next-img { right: 20px; }
     </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="logo">
-        <img src="favicon.png" alt="Logo"> 
-        <span>My Portfolio</span>
-    </div>
-    <div class="nav-links">
-        <a href="#gallery-target">GALLERY</a>
-    </div>
-</nav>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="favicon.png" alt="Logo"> 
+            <span>My Portfolio</span>
+        </div>
+        <div class="nav-links">
+            <a href="#gallery-target">GALLERY</a>
+        </div>
+    </nav>
 
     <section class="hero">
         <div class="hero-text">
@@ -324,84 +129,152 @@
                 ranging from modern architecture to futuristic cities.
             </div>
         </div>
-        <div class="hero-footer">
-            <div class="hero-copyright">
-                <i class="fa-brands fa-discord"></i>
-                r.sghra
-            </div>
-        </div>
     </section>
 
     <section class="gallery-section" id="gallery-target">
         <div class="gallery-controls">
-            <button class="nav-btn" onclick="slideGallery(-470)">←</button>
-            <button class="nav-btn" onclick="slideGallery(470)">→</button>
+            <button class="nav-btn" id="slideLeft">←</button>
+            <button class="nav-btn" id="slideRight">→</button>
         </div>
 
         <div class="gallery-grid" id="slider">
-            <div class="gallery-item" onclick="openModal(this.querySelector('img').src)">
-                <img src="port1.png" alt="1">
+            <div class="gallery-wrapper" onclick="openModal(['port1.png'])">
+                <img src="port1.png">
                 <h3>White Castle</h3>
                 <p>A majestic white castle of grandeur and elegance.</p>
             </div>
-            <div class="gallery-item" onclick="openModal(this.querySelector('img').src)">
-                <img src="port2.png" alt="2">
+            <div class="gallery-wrapper" onclick="openModal(['port2.png'])">
+                <img src="port2.png">
                 <h3>Steampunk</h3>
-                <p>A steampunk world of gears, steam, and industrial fantasy.</p>
+                <p>A steampunk world of gears and industrial fantasy.</p>
             </div>
-            <div class="gallery-item" onclick="openModal(this.querySelector('img').src)">
-                <img src="port3.png" alt="3">
+            <div class="gallery-wrapper" onclick="openModal(['port3.png'])">
+                <img src="port3.png">
                 <h3>Lunar Chinese</h3>
-                <p>A celestial Lunar Chinese dragon embodying moonlight, ancient wisdom, and divine power.</p>
+                <p>A celestial Lunar Chinese dragon embodying moonlight.</p>
             </div>
-            <div class="gallery-item" onclick="openModal(this.querySelector('img').src)">
-                <img src="port4.png" alt="4">
-                <h3>Kingdom of the Twin Dragons</h3>
-                <p>A majestic floating island where a grand medieval kingdom rises above the clouds, guarded by twin dragons and surrounded by lush forests and ancient architecture.</p>
+            <div class="gallery-wrapper" onclick="openModal(['port4.png'])">
+                <img src="port4.png">
+                <h3>Sky Dragon Kingdom</h3>
+                <p>A majestic floating island guarded by twin dragons.</p>
             </div>
         </div>
         
         <div class="gallery-footer-large">
-            <span class="page-number" id="full-date">00 / 00 / 00</span>
+            <span class="page-number" id="full-date">26 / 04 / 26</span>
             <h2 class="large-title">GALLERY</h2>
         </div>
     </section>
 
-    <div id="myModal" class="modal" onclick="closeModal()">
-        <img class="modal-content" id="imgFull">
+    <div id="myModal" class="modal">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <button class="modal-nav prev-img" onclick="changeImg(-1)">&#10094;</button>
+        <div class="modal-container" id="modalContainer">
+            <img class="modal-content" id="imgFull" draggable="false">
+        </div>
+        <button class="modal-nav next-img" onclick="changeImg(1)">&#10095;</button>
     </div>
 
     <script>
-        function updateFullDate() {
-            const now = new Date();
-            const date = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0'); 
-            const year = String(now.getFullYear()).substring(2); 
+        // --- 1. GALLERY DRAG (Halaman Utama) ---
+        const slider = document.getElementById('slider');
+        let isDown = false; let startX; let scrollLeft;
 
-            const formattedDate = `${date} / ${month} / ${year}`;
-            document.getElementById('full-date').innerText = formattedDate;
-        }
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true; startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft; slider.style.scrollBehavior = 'auto';
+        });
+        slider.addEventListener('mouseleave', () => { isDown = false; });
+        slider.addEventListener('mouseup', () => { isDown = false; slider.style.scrollBehavior = 'smooth'; });
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return; e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 2; slider.scrollLeft = scrollLeft - walk;
+        });
 
-        updateFullDate();
+        document.getElementById('slideLeft').onclick = () => { slider.scrollLeft -= 470; };
+        document.getElementById('slideRight').onclick = () => { slider.scrollLeft += 470; };
 
-        function slideGallery(amount) {
-            document.getElementById('slider').scrollBy({
-                left: amount,
-                behavior: 'smooth'
-            });
-        }
 
-        function openModal(src) {
+        // --- 2. MODAL SMART ZOOM & DRAG ---
+        let currentImages = []; let currentIndex = 0;
+        let scale = 1; let translateX = 0; let translateY = 0;
+        let isDraggingModal = false; let mStartX, mStartY;
+
+        const modalImg = document.getElementById("imgFull");
+        const modalContainer = document.getElementById("modalContainer");
+
+        function openModal(imgArray) {
+            currentImages = imgArray; currentIndex = 0;
+            resetTransform();
             document.getElementById("myModal").style.display = "flex";
-            document.getElementById("imgFull").src = src;
+            modalImg.src = currentImages[0];
             document.body.style.overflow = "hidden";
         }
 
-        function closeModal() {
-            document.getElementById("myModal").style.display = "none";
-            document.body.style.overflow = "auto";
+        function changeImg(dir) {
+            currentIndex = (currentIndex + dir + currentImages.length) % currentImages.length;
+            modalImg.src = currentImages[currentIndex];
+            resetTransform();
         }
-    </script>
 
+        // ZOOM LOGIC
+        modalContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY < 0 ? 0.2 : -0.2;
+            const oldScale = scale;
+            scale = Math.min(Math.max(1, scale + delta), 4); // Min scale 1 (biar ga ngecil dari ori)
+
+            // Kalau balik ke 1x, reset posisi ke tengah otomatis
+            if (scale === 1) {
+                translateX = 0; translateY = 0;
+                modalImg.style.cursor = "default";
+            } else {
+                modalImg.style.cursor = "grab";
+            }
+            applyTransform();
+        }, { passive: false });
+
+        // DRAG LOGIC (Hanya aktif jika scale > 1)
+        modalImg.addEventListener('mousedown', (e) => {
+            if (scale <= 1) return; // Nggak bisa drag kalau belum di-zoom
+            isDraggingModal = true;
+            modalImg.style.cursor = "grabbing";
+            mStartX = e.clientX - translateX;
+            mStartY = e.clientY - translateY;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDraggingModal) return;
+            translateX = e.clientX - mStartX;
+            translateY = e.clientY - mStartY;
+            applyTransform();
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDraggingModal = false;
+            if (scale > 1) modalImg.style.cursor = "grab";
+        });
+
+        function resetTransform() { 
+            scale = 1; translateX = 0; translateY = 0; 
+            modalImg.style.cursor = "default";
+            applyTransform(); 
+        }
+
+        function applyTransform() { 
+            modalImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`; 
+        }
+
+        function closeModal() { 
+            document.getElementById("myModal").style.display = "none"; 
+            document.body.style.overflow = "auto"; 
+        }
+
+        // Close on background click
+        document.getElementById("myModal").addEventListener('click', (e) => {
+            if (e.target.id === "myModal" || e.target.id === "modalContainer") closeModal();
+        });
+    </script>
 </body>
 </html>
