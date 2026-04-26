@@ -104,9 +104,12 @@
         }
         .close-modal { position: absolute; top: 30px; right: 40px; font-size: 35px; cursor: pointer; z-index: 1010; opacity: 0.6; }
         .close-modal:hover { opacity: 1; }
-        .modal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: #fff; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1010; }
+        .modal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: #fff; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1010; transition: 0.2s; }
         .prev-img { left: 20px; }
         .next-img { right: 20px; }
+
+        /* Style untuk menyembunyikan panah */
+        .nav-hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -138,23 +141,23 @@
         </div>
 
         <div class="gallery-grid" id="slider">
-            <div class="gallery-wrapper" onclick="openModal(['port1.png'])">
-                <img src="port1.png">
+            <div class="gallery-wrapper" onclick="openModal(0)">
+                <img src="port1.png" class="gallery-source">
                 <h3>White Castle</h3>
                 <p>A majestic white castle of grandeur and elegance.</p>
             </div>
-            <div class="gallery-wrapper" onclick="openModal(['port2.png'])">
-                <img src="port2.png">
+            <div class="gallery-wrapper" onclick="openModal(1)">
+                <img src="port2.png" class="gallery-source">
                 <h3>Steampunk</h3>
                 <p>A steampunk world of gears and industrial fantasy.</p>
             </div>
-            <div class="gallery-wrapper" onclick="openModal(['port3.png'])">
-                <img src="port3.png">
+            <div class="gallery-wrapper" onclick="openModal(2)">
+                <img src="port3.png" class="gallery-source">
                 <h3>Lunar Chinese</h3>
                 <p>A celestial Lunar Chinese dragon embodying moonlight.</p>
             </div>
-            <div class="gallery-wrapper" onclick="openModal(['port4.png'])">
-                <img src="port4.png">
+            <div class="gallery-wrapper" onclick="openModal(3)">
+                <img src="port4.png" class="gallery-source">
                 <h3>Sky Dragon Kingdom</h3>
                 <p>A majestic floating island guarded by twin dragons.</p>
             </div>
@@ -168,11 +171,11 @@
 
     <div id="myModal" class="modal">
         <span class="close-modal" onclick="closeModal()">&times;</span>
-        <button class="modal-nav prev-img" onclick="changeImg(-1)">&#10094;</button>
+        <button class="modal-nav prev-img" id="prevBtn" onclick="changeImg(-1)">&#10094;</button>
         <div class="modal-container" id="modalContainer">
             <img class="modal-content" id="imgFull" draggable="false">
         </div>
-        <button class="modal-nav next-img" onclick="changeImg(1)">&#10095;</button>
+        <button class="modal-nav next-img" id="nextBtn" onclick="changeImg(1)">&#10095;</button>
     </div>
 
     <script>
@@ -196,36 +199,59 @@
         document.getElementById('slideRight').onclick = () => { slider.scrollLeft += 470; };
 
 
-        // --- 2. MODAL SMART ZOOM & DRAG ---
-        let currentImages = []; let currentIndex = 0;
+        // --- 2. MODAL SMART ZOOM & DRAG + GLOBAL NAVIGATION ---
+        let allImages = []; // Menyimpan semua source gambar di galeri
+        let currentIndex = 0;
         let scale = 1; let translateX = 0; let translateY = 0;
         let isDraggingModal = false; let mStartX, mStartY;
 
         const modalImg = document.getElementById("imgFull");
         const modalContainer = document.getElementById("modalContainer");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
 
-        function openModal(imgArray) {
-            currentImages = imgArray; currentIndex = 0;
+        // Ambil semua source gambar saat halaman load
+        window.onload = () => {
+            const imgs = document.querySelectorAll('.gallery-source');
+            allImages = Array.from(imgs).map(img => img.src);
+        };
+
+        function updateNavButtons() {
+            // Sembunyikan prev kalau di gambar pertama
+            if (currentIndex === 0) prevBtn.classList.add('nav-hidden');
+            else prevBtn.classList.remove('nav-hidden');
+
+            // Sembunyikan next kalau di gambar terakhir
+            if (currentIndex === allImages.length - 1) nextBtn.classList.add('nav-hidden');
+            else nextBtn.classList.remove('nav-hidden');
+        }
+
+        function openModal(index) {
+            currentIndex = index;
             resetTransform();
             document.getElementById("myModal").style.display = "flex";
-            modalImg.src = currentImages[0];
+            modalImg.src = allImages[currentIndex];
             document.body.style.overflow = "hidden";
+            updateNavButtons();
         }
 
         function changeImg(dir) {
-            currentIndex = (currentIndex + dir + currentImages.length) % currentImages.length;
-            modalImg.src = currentImages[currentIndex];
-            resetTransform();
+            let newIndex = currentIndex + dir;
+            // Hanya ganti jika masih dalam range (biar gak looping)
+            if (newIndex >= 0 && newIndex < allImages.length) {
+                currentIndex = newIndex;
+                modalImg.src = allImages[currentIndex];
+                resetTransform();
+                updateNavButtons();
+            }
         }
 
         // ZOOM LOGIC
         modalContainer.addEventListener('wheel', (e) => {
             e.preventDefault();
             const delta = e.deltaY < 0 ? 0.2 : -0.2;
-            const oldScale = scale;
-            scale = Math.min(Math.max(1, scale + delta), 4); // Min scale 1 (biar ga ngecil dari ori)
+            scale = Math.min(Math.max(1, scale + delta), 4);
 
-            // Kalau balik ke 1x, reset posisi ke tengah otomatis
             if (scale === 1) {
                 translateX = 0; translateY = 0;
                 modalImg.style.cursor = "default";
@@ -235,9 +261,9 @@
             applyTransform();
         }, { passive: false });
 
-        // DRAG LOGIC (Hanya aktif jika scale > 1)
+        // DRAG LOGIC
         modalImg.addEventListener('mousedown', (e) => {
-            if (scale <= 1) return; // Nggak bisa drag kalau belum di-zoom
+            if (scale <= 1) return;
             isDraggingModal = true;
             modalImg.style.cursor = "grabbing";
             mStartX = e.clientX - translateX;
@@ -271,7 +297,6 @@
             document.body.style.overflow = "auto"; 
         }
 
-        // Close on background click
         document.getElementById("myModal").addEventListener('click', (e) => {
             if (e.target.id === "myModal" || e.target.id === "modalContainer") closeModal();
         });
