@@ -62,7 +62,6 @@
         }
         .hero-text span { font-weight: 700; }
 
-        /* --- PERBAIKAN GAYA DESKRIPSI (SEPERTI REFERENSI) --- */
         .hero-desc {
             font-size: clamp(14px, 1.8vw, 17px);
             margin-top: 25px;
@@ -74,7 +73,6 @@
             letter-spacing: 0.2px;
             animation: fadeInUp 1.2s cubic-bezier(0.2, 0.6, 0.2, 1) 0.4s backwards;
         }
-        /* -------------------------------------- */
 
         /* --- GALLERY SECTION --- */
         .gallery-section { padding: 100px 0 50px 5%; background-color: #000; }
@@ -106,12 +104,13 @@
             padding-right: 5%; border-top: 1px solid #222; padding-top: 40px;
         }
 
-        /* --- STYLE BARU UNTUK TAG GRAFITI --- */
-        .graffiti-tag {
-            width: clamp(150px, 25vw, 350px);
+        /* --- STYLE UNTUK GIF (GANTI GRAFITI) --- */
+        .gif-tag {
+            width: clamp(100px, 15vw, 200px); /* Ukuran disesuaikan agar tidak terlalu besar */
             height: auto;
             object-fit: contain;
             opacity: 0.9;
+            margin-bottom: 10px;
         }
 
         .large-title { font-size: clamp(40px, 10vw, 140px); font-weight: 400; }
@@ -189,7 +188,7 @@
         </div>
         
         <div class="gallery-footer-large">
-            <img src="grafiti.png" alt="Star Money Tag" class="graffiti-tag">
+            <img src="3dhead.gif" alt="3D Head Animation" class="gif-tag">
             <h2 class="large-title">GALLERY</h2>
         </div>
     </section>
