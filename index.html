@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FL5GHQ7FH7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FL5GHQ7FH7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-  gtag('config', 'G-FL5GHQ7FH7');
-</script>
+      gtag('config', 'G-FL5GHQ7FH7');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TheRazerr Portfolio</title>
@@ -62,10 +61,21 @@
             animation: fadeInUp 1.2s cubic-bezier(0.2, 0.6, 0.2, 1) forwards;
         }
         .hero-text span { font-weight: 700; }
+
+        /* --- BAGIAN YANG DIUBAH (HERO DESC) --- */
         .hero-desc {
-            font-size: 16px; margin-top: 25px; opacity: 0.9; text-transform: uppercase;
+            font-size: clamp(14px, 2vw, 18px);
+            margin-top: 30px;
+            opacity: 0.8;
+            line-height: 1.8;
+            max-width: 800px;
+            text-transform: none; /* Menghapus Uppercase agar lebih rapi */
+            font-weight: 300;
+            letter-spacing: 0.5px;
             animation: fadeInUp 1.2s cubic-bezier(0.2, 0.6, 0.2, 1) 0.4s backwards;
         }
+        .hero-desc p { margin-bottom: 15px; }
+        /* -------------------------------------- */
 
         /* --- GALLERY SECTION --- */
         .gallery-section { padding: 100px 0 50px 5%; background-color: #000; }
@@ -108,7 +118,7 @@
         .modal-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         .modal-content { 
             max-width: 90%; max-height: 90%; object-fit: contain; 
-            transition: transform 0.1s ease-out; /* Smooth transition */
+            transition: transform 0.1s ease-out;
             user-select: none;
         }
         .close-modal { position: absolute; top: 30px; right: 40px; font-size: 35px; cursor: pointer; z-index: 1010; opacity: 0.6; }
@@ -116,8 +126,6 @@
         .modal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: #fff; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; z-index: 1010; transition: 0.2s; }
         .prev-img { left: 20px; }
         .next-img { right: 20px; }
-
-        /* Style untuk menyembunyikan panah */
         .nav-hidden { display: none !important; }
     </style>
 </head>
@@ -137,9 +145,9 @@
         <div class="hero-text">
             <h1>HELLO, I'M<br><span>TheRazerr</span></h1>
             <div class="hero-desc">
-                I am a Minecraft builder from Indonesia with over 5 years of experience specializing in medieval and fantasy-themed creations.<br>
-                I have a strong passion for designing immersive environments, detailed structures, and atmospheric landscapes that bring imaginative worlds to life.<br>
-                Throughout my journey, I have refined my building techniques with a focus on composition, scale, and detail to deliver high-quality, visually engaging builds for personal projects, servers, and collaborations.
+                <p>Minecraft Builder based in Indonesia with 5+ years of experience, specializing in <span style="color: #fff; font-weight: 700;">Medieval and Fantasy</span> creations.</p>
+                <p>I design immersive environments, detailed structures, and atmospheric landscapes that bring imaginative worlds to life.</p>
+                <p>Focused on composition, scale, and intricate detail to deliver high-quality builds for personal projects, servers, and collaborations.</p>
             </div>
         </div>
     </section>
@@ -189,7 +197,6 @@
     </div>
 
     <script>
-        // --- 1. GALLERY DRAG (Halaman Utama) ---
         const slider = document.getElementById('slider');
         let isDown = false; let startX; let scrollLeft;
 
@@ -208,9 +215,7 @@
         document.getElementById('slideLeft').onclick = () => { slider.scrollLeft -= 470; };
         document.getElementById('slideRight').onclick = () => { slider.scrollLeft += 470; };
 
-
-        // --- 2. MODAL SMART ZOOM & DRAG + GLOBAL NAVIGATION ---
-        let allImages = []; // Menyimpan semua source gambar di galeri
+        let allImages = [];
         let currentIndex = 0;
         let scale = 1; let translateX = 0; let translateY = 0;
         let isDraggingModal = false; let mStartX, mStartY;
@@ -220,18 +225,14 @@
         const prevBtn = document.getElementById("prevBtn");
         const nextBtn = document.getElementById("nextBtn");
 
-        // Ambil semua source gambar saat halaman load
         window.onload = () => {
             const imgs = document.querySelectorAll('.gallery-source');
             allImages = Array.from(imgs).map(img => img.src);
         };
 
         function updateNavButtons() {
-            // Sembunyikan prev kalau di gambar pertama
             if (currentIndex === 0) prevBtn.classList.add('nav-hidden');
             else prevBtn.classList.remove('nav-hidden');
-
-            // Sembunyikan next kalau di gambar terakhir
             if (currentIndex === allImages.length - 1) nextBtn.classList.add('nav-hidden');
             else nextBtn.classList.remove('nav-hidden');
         }
@@ -247,7 +248,6 @@
 
         function changeImg(dir) {
             let newIndex = currentIndex + dir;
-            // Hanya ganti jika masih dalam range (biar gak looping)
             if (newIndex >= 0 && newIndex < allImages.length) {
                 currentIndex = newIndex;
                 modalImg.src = allImages[currentIndex];
@@ -256,22 +256,15 @@
             }
         }
 
-        // ZOOM LOGIC
         modalContainer.addEventListener('wheel', (e) => {
             e.preventDefault();
             const delta = e.deltaY < 0 ? 0.2 : -0.2;
             scale = Math.min(Math.max(1, scale + delta), 4);
-
-            if (scale === 1) {
-                translateX = 0; translateY = 0;
-                modalImg.style.cursor = "default";
-            } else {
-                modalImg.style.cursor = "grab";
-            }
+            if (scale === 1) { translateX = 0; translateY = 0; modalImg.style.cursor = "default"; } 
+            else { modalImg.style.cursor = "grab"; }
             applyTransform();
         }, { passive: false });
 
-        // DRAG LOGIC
         modalImg.addEventListener('mousedown', (e) => {
             if (scale <= 1) return;
             isDraggingModal = true;
