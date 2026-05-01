@@ -105,7 +105,15 @@
             display: flex; align-items: flex-end; justify-content: space-between;
             padding-right: 5%; border-top: 1px solid #222; padding-top: 40px;
         }
-        .page-number { font-size: clamp(30px, 5vw, 60px); font-weight: 300; }
+
+        /* --- STYLE BARU UNTUK TAG GRAFITI --- */
+        .graffiti-tag {
+            width: clamp(150px, 25vw, 350px);
+            height: auto;
+            object-fit: contain;
+            opacity: 0.9;
+        }
+
         .large-title { font-size: clamp(40px, 10vw, 140px); font-weight: 400; }
 
         /* --- MODAL --- */
@@ -181,7 +189,7 @@
         </div>
         
         <div class="gallery-footer-large">
-            <span class="page-number" id="full-date">26 / 04 / 26</span>
+            <img src="grafiti.png" alt="Star Money Tag" class="graffiti-tag">
             <h2 class="large-title">GALLERY</h2>
         </div>
     </section>
