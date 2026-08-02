@@ -134,6 +134,65 @@
         .prev-img { left: 20px; }
         .next-img { right: 20px; }
         .nav-hidden { display: none !important; }
+
+        /* ========================================================= */
+        /* --- MOBILE RESPONSIVE STYLES (HP OPTIMIZATION) --- */
+        /* ========================================================= */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 25px 6%;
+            }
+            .hero-text h1 {
+                font-size: 42px; /* Ukuran yang pas untuk judul di HP */
+                line-height: 1.05;
+                letter-spacing: -1px;
+            }
+            .hero-desc {
+                font-size: 13px;
+                margin-top: 15px;
+                line-height: 1.6;
+            }
+            
+            /* Penyesuaian Galeri */
+            .gallery-section {
+                padding: 60px 0 30px 6%;
+            }
+            .gallery-wrapper {
+                flex: 0 0 85vw; /* Lebar kartu menyesuaikan lebar layar HP */
+            }
+            .gallery-wrapper img {
+                height: 350px; /* Gambar tidak terlalu tinggi di HP */
+            }
+            .gallery-controls {
+                padding-right: 6%;
+            }
+            .nav-btn {
+                width: 40px; height: 40px;
+            }
+
+            /* Penyesuaian Footer Galeri */
+            .gallery-footer-large {
+                padding-right: 6%;
+                padding-top: 25px;
+            }
+            .large-title {
+                font-size: 36px;
+            }
+            .gif-tag {
+                width: 80px;
+            }
+
+            /* Penyesuaian Modal */
+            .modal-nav {
+                width: 40px; height: 40px;
+                font-size: 16px;
+                background: rgba(0,0,0,0.6);
+            }
+            .prev-img { left: 10px; }
+            .next-img { right: 10px; }
+            .close-modal { top: 15px; right: 20px; font-size: 30px; }
+            .modal-content { max-width: 95%; max-height: 85%; }
+        }
     </style>
 </head>
 <body>
@@ -214,8 +273,9 @@
             const walk = (x - startX) * 2; slider.scrollLeft = scrollLeft - walk;
         });
 
-        document.getElementById('slideLeft').onclick = () => { slider.scrollLeft -= 470; };
-        document.getElementById('slideRight').onclick = () => { slider.scrollLeft += 470; };
+        // Penyesuaian slide per klik
+        document.getElementById('slideLeft').onclick = () => { slider.scrollLeft -= window.innerWidth > 768 ? 470 : window.innerWidth * 0.85; };
+        document.getElementById('slideRight').onclick = () => { slider.scrollLeft += window.innerWidth > 768 ? 470 : window.innerWidth * 0.85; };
 
         let allImages = [];
         let currentIndex = 0;
