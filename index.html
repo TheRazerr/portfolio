@@ -21,7 +21,7 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 
     <script>document.documentElement.classList.add('js');</script>
 
@@ -39,7 +39,12 @@
             --gutter: clamp(20px, 5vw, 64px);
             --max: 1200px;
             --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+            --font-display: 'Press Start 2P', 'Pixelify Sans', monospace;
         }
+        .eyebrow, .logo, .nav-links a, .btn, .stats li, .feature .num, .feature h3,
+        .card h3, .lb-count, .lb-cap h4, .to-top, .foot-brand strong,
+        .hero h1, .section-head h2 { font-family: var(--font-display); font-weight: 400; }
+        .hero h1 b, .section-head h2 b { font-weight: 400; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html {
             scroll-behavior: smooth;
@@ -50,7 +55,7 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            font-family: 'Pixelify Sans', 'Courier New', monospace;
             line-height: 1.6;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
@@ -68,8 +73,8 @@
         .container { max-width: var(--max); margin: 0 auto; }
         .eyebrow {
             display: inline-block;
-            font-size: 11px; font-weight: 500;
-            letter-spacing: 0.22em; text-transform: uppercase;
+            font-size: 10px; font-weight: 400; line-height: 1.6;
+            letter-spacing: 0.08em; text-transform: uppercase;
             color: var(--accent);
         }
 
@@ -88,11 +93,11 @@
             padding-top: calc(12px + env(safe-area-inset-top));
             padding-bottom: 12px;
         }
-        .logo { display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; }
         .logo img { width: 30px; height: 30px; border-radius: 8px; object-fit: cover; }
         .nav-links { display: flex; gap: 28px; }
         .nav-links a {
-            font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+            font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
             padding: 10px 0; position: relative; opacity: 0.85; transition: opacity 0.3s;
         }
         .nav-links a::after {
@@ -128,8 +133,8 @@
 
         .hero h1 {
             margin-top: 18px;
-            font-size: clamp(2.6rem, 9vw, 7rem);
-            line-height: 1; font-weight: 300; letter-spacing: -0.03em; text-transform: uppercase;
+            font-size: clamp(1.5rem, 6.6vw, 4.2rem);
+            line-height: 1.3; font-weight: 400; letter-spacing: 0; text-transform: uppercase;
         }
         .hero h1 span {
             display: block; font-weight: 700;
@@ -139,14 +144,14 @@
         }
         .lead {
             margin-top: 24px; max-width: 56ch;
-            font-size: clamp(0.95rem, 1.5vw, 1.1rem);
-            line-height: 1.75; color: rgba(255, 255, 255, 0.82);
+            font-size: clamp(1rem, 1.6vw, 1.2rem);
+            line-height: 1.7; color: rgba(255, 255, 255, 0.82);
         }
         .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             min-height: 50px; padding: 0 28px; border-radius: 999px;
-            font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+            font-size: 11px; font-weight: 400; letter-spacing: 0.02em; text-transform: uppercase;
             transition: transform 0.3s var(--ease), background 0.3s, color 0.3s, border-color 0.3s;
         }
         .btn.primary { background: var(--accent); color: #06140f; }
@@ -156,7 +161,7 @@
 
         .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 40px; list-style: none; }
         .stats li {
-            padding: 9px 16px; border-radius: 999px; font-size: 12px; letter-spacing: 0.04em;
+            padding: 11px 16px; border-radius: 999px; font-size: 9px; line-height: 1.5; letter-spacing: 0;
             border: 1px solid var(--line); background: rgba(14, 16, 19, 0.55);
             -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
             color: rgba(255,255,255,0.85);
@@ -168,8 +173,8 @@
         .section-head { margin-bottom: clamp(32px, 5vw, 56px); }
         .section-head h2 {
             margin-top: 12px;
-            font-size: clamp(1.9rem, 5vw, 3.4rem);
-            line-height: 1.1; font-weight: 300; letter-spacing: -0.02em;
+            font-size: clamp(1rem, 3.2vw, 1.9rem);
+            line-height: 1.5; font-weight: 400; letter-spacing: 0;
         }
         .section-head h2 b { font-weight: 700; }
         .section-head p { margin-top: 14px; color: var(--muted); max-width: 52ch; }
@@ -181,8 +186,8 @@
             background: var(--surface); border: 1px solid var(--line);
             transition: border-color 0.3s, transform 0.4s var(--ease);
         }
-        .feature .num { font-size: 12px; letter-spacing: 0.2em; color: var(--accent); }
-        .feature h3 { margin-top: 18px; font-size: 1.15rem; font-weight: 500; }
+        .feature .num { font-size: 11px; letter-spacing: 0.1em; color: var(--accent); }
+        .feature h3 { margin-top: 18px; font-size: 0.8rem; line-height: 1.6; font-weight: 400; }
         .feature p { margin-top: 8px; color: var(--muted); font-size: 0.95rem; }
         @media (hover: hover) { .feature:hover { border-color: rgba(139,232,203,0.4); transform: translateY(-4px); } }
 
@@ -203,7 +208,7 @@
             -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
         }
         .card .info { padding: 18px 20px 22px; }
-        .card h3 { font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; }
+        .card h3 { font-size: 0.8rem; line-height: 1.6; font-weight: 400; letter-spacing: 0; }
         .card p { margin-top: 6px; font-size: 0.88rem; color: var(--muted); line-height: 1.55; }
         @media (hover: hover) {
             .card:hover { border-color: rgba(139,232,203,0.4); transform: translateY(-4px); }
@@ -224,9 +229,9 @@
         .foot { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
         .foot-brand { display: flex; align-items: center; gap: 14px; }
         .foot-brand img { width: 64px; height: 64px; object-fit: contain; }
-        .foot-brand strong { display: block; font-weight: 500; }
+        .foot-brand strong { display: block; font-size: 0.75rem; line-height: 1.8; font-weight: 400; }
         .foot small { color: var(--muted); font-size: 12px; }
-        .to-top { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; padding: 12px 0; opacity: 0.8; }
+        .to-top { font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; padding: 12px 0; opacity: 0.8; }
         .to-top:hover { opacity: 1; }
 
         /* Reveal on scroll */
@@ -245,7 +250,7 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: calc(12px + env(safe-area-inset-top)) 16px 12px 20px;
         }
-        .lb-count { font-size: 12px; letter-spacing: 0.2em; color: var(--muted); }
+        .lb-count { font-size: 10px; letter-spacing: 0.1em; color: var(--muted); }
         .lb-btn {
             width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center;
             font-size: 22px; background: rgba(255,255,255,0.08); transition: background 0.2s;
@@ -268,13 +273,13 @@
         .lb-prev { left: 16px; } .lb-next { right: 16px; }
         .lb-nav[hidden] { display: none; }
         .lb-cap { padding: 14px 24px calc(20px + env(safe-area-inset-bottom)); text-align: center; }
-        .lb-cap h4 { font-size: 0.95rem; font-weight: 500; }
+        .lb-cap h4 { font-size: 0.75rem; line-height: 1.6; font-weight: 400; }
         .lb-cap p { margin-top: 4px; font-size: 0.82rem; color: var(--muted); }
 
         /* ============ MOBILE ============ */
         @media (max-width: 768px) {
-            .nav-links { gap: 20px; }
-            .nav-links a { font-size: 11px; letter-spacing: 0.12em; }
+            .nav-links { gap: 14px; }
+            .nav-links a { font-size: 9px; letter-spacing: 0; }
             .hero { align-items: flex-end; padding-top: 100px; padding-bottom: 56px; }
             .hero::after {
                 background:
@@ -404,17 +409,6 @@
                         <div class="info">
                             <h3>Sky Dragon Kingdom</h3>
                             <p>A majestic floating island guarded by twin dragons.</p>
-                        </div>
-                    </button>
-                  
-                    <button class="card reveal" type="button" style="--d:.05s" aria-label="Buka gambar: coming soon">
-                        <div class="thumb">
-                            <img src="" alt="coming soon" loading="lazy" decoding="async">
-                            <span class="expand" aria-hidden="true">⤢</span>
-                        </div>
-                        <div class="info">
-                            <h3>Coming Soon</h3>
-                            <p>Still on progress..</p>
                         </div>
                     </button>
                 </div>
