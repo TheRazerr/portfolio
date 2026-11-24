@@ -267,13 +267,13 @@
         .admin-bar {
             position: fixed; left: 50%; transform: translateX(-50%); z-index: 60;
             bottom: calc(14px + env(safe-area-inset-bottom));
-            display: none; align-items: center; gap: 4px; padding: 6px;
-            max-width: calc(100vw - 24px);
+            display: none; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 6px; padding: 6px;
+            width: min(calc(100vw - 24px), 340px);
             border-radius: 999px; background: rgba(14,16,19,0.88);
             border: 1px solid rgba(139,232,203,0.4);
             -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
         }
-        body.admin .admin-bar { display: flex; }
+        body.admin .admin-bar { display: grid; }
         body.admin footer { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
         .admin-bar .tag { font-family: var(--font-display); font-size: 9px; color: var(--accent); padding: 0 10px; }
         .admin-bar button {
@@ -282,6 +282,8 @@
         }
         .admin-bar button:hover { background: rgba(255,255,255,0.1); }
         .admin-bar .pub { background: var(--accent); color: #06140f; }
+        .admin-bar .side-l { justify-self: start; }
+        .admin-bar .side-r { justify-self: end; }
         .admin-bar .pub:hover { background: #a9f0da; }
         .admin-bar button:disabled { opacity: 0.6; cursor: progress; }
         .dlg .sub b { color: var(--text); font-weight: 500; }
@@ -574,10 +576,9 @@
     </div>
 
     <div class="admin-bar" id="admin-bar">
-        <span class="tag">Admin</span>
+        <button type="button" id="ab-setup" class="side-l">Setup</button>
         <button type="button" class="pub" id="ab-publish">Publish</button>
-        <button type="button" id="ab-setup">Setup</button>
-        <button type="button" id="ab-logout">Logout</button>
+        <button type="button" id="ab-logout" class="side-r">Logout</button>
     </div>
 
     <div class="modal-ov" id="set-ov" role="dialog" aria-modal="true" aria-labelledby="set-title">
@@ -587,6 +588,7 @@
             <label class="field"><span>Repository</span><input type="text" id="set-repo" placeholder="username/nama-repo" autocapitalize="off" spellcheck="false"></label>
             <label class="field"><span>Branch</span><input type="text" id="set-branch" placeholder="main" autocapitalize="off" spellcheck="false"></label>
             <label class="field"><span>Token</span><input type="password" id="set-token" autocomplete="off"></label>
+            <label class="field"><span>Password baru (kosongkan jika tidak diganti, min. 6 karakter)</span><input type="password" id="set-newpw" autocomplete="new-password"></label>
             <div class="err" id="set-err" role="alert"></div>
             <div class="dlg-actions">
                 <button type="button" class="btn ghost" data-close>Cancel</button>
@@ -841,7 +843,8 @@
            Project disimpan di browser Anda (draft). Klik "Export" untuk
            menerbitkannya agar terlihat semua pengunjung. */
         var ADMIN_HASH = 'bc1ae4532b4ddb8fe03a1c794a1958f1bdd9a5642fef4fc64f219820c39f8289';
-        var LS_KEY = 'rz_projects', SS_KEY = 'rz_admin';
+        var pwHash = lsGet(PW_KEY) || ADMIN_HASH;
+        var LS_KEY = 'rz_projects', SS_KEY = 'rz_admin', PW_KEY = 'rz_pwhash';
 
         function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
         function lsSet(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
@@ -991,7 +994,7 @@
         document.getElementById('login-form').addEventListener('submit', function (e) {
             e.preventDefault();
             sha256(loginPw.value).then(function (h) {
-                if (h === ADMIN_HASH) {
+                if (h === pwHash) {
                     closeModal();
                     setAdmin(true);
                     toast('Admin mode aktif');
@@ -1138,12 +1141,14 @@
         var setBranch = document.getElementById('set-branch');
         var setToken = document.getElementById('set-token');
         var setErr = document.getElementById('set-err');
+        var setNewPw = document.getElementById('set-newpw');
 
         function openSettings() {
             setRepo.value = ghCfg ? ghCfg.repo : '';
             setBranch.value = ghCfg ? ghCfg.branch : 'main';
             setToken.value = ghCfg ? ghCfg.token : '';
             setErr.textContent = '';
+            setNewPw.value = '';
             openModal(setOv);
         }
         document.getElementById('ab-setup').addEventListener('click', openSettings);
@@ -1153,18 +1158,38 @@
             var repo = setRepo.value.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\.git$/, '').replace(/\/$/, '');
             var branch = setBranch.value.trim() || 'main';
             var token = setToken.value.trim();
-            if (!repo && !token) {
-                lsDel(GH_KEY); ghCfg = null; closeModal();
-                toast('Pengaturan dihapus');
+            var newpw = setNewPw.value;
+            if (newpw && newpw.length < 6) { setErr.textContent = 'Password baru minimal 6 karakter.'; return; }
+            var wantGh = !!(repo || token);
+            if (wantGh) {
+                if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { setErr.textContent = 'Format repository: username/nama-repo'; return; }
+                if (!token) { setErr.textContent = 'Token wajib diisi.'; return; }
+                var cfg = { repo: repo, branch: branch, token: token };
+                if (!lsSet(GH_KEY, JSON.stringify(cfg))) { setErr.textContent = 'Gagal menyimpan di browser.'; return; }
+                ghCfg = cfg;
+            } else {
+                lsDel(GH_KEY); ghCfg = null;
+            }
+            if (!newpw) {
+                closeModal();
+                toast(wantGh ? 'Pengaturan tersimpan. Sekarang klik Publish.' : 'Pengaturan dihapus');
                 return;
             }
-            if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { setErr.textContent = 'Format repository: username/nama-repo'; return; }
-            if (!token) { setErr.textContent = 'Token wajib diisi.'; return; }
-            var cfg = { repo: repo, branch: branch, token: token };
-            if (!lsSet(GH_KEY, JSON.stringify(cfg))) { setErr.textContent = 'Gagal menyimpan di browser.'; return; }
-            ghCfg = cfg;
-            closeModal();
-            toast('Pengaturan tersimpan. Sekarang klik Publish.');
+            sha256(newpw).then(function (hh) {
+                lsSet(PW_KEY, hh);
+                pwHash = hh;
+                if (ghCfg) {
+                    var b64 = btoa(JSON.stringify({ hash: hh }));
+                    return ghPut('auth.json', b64, 'Update admin password').then(function () {
+                        closeModal();
+                        toast('Password diganti dan disimpan ke GitHub (berlaku di semua perangkat).', 6000);
+                    });
+                }
+                closeModal();
+                toast('Password diganti, tapi hanya di browser ini. Isi GitHub di Setup agar berlaku di semua perangkat.', 6000);
+            }).catch(function (er) {
+                setErr.textContent = er && er.status ? ghMsg(er) : 'Gagal mengganti password. Coba lagi.';
+            });
         });
 
         function httpErr(status) { var er = new Error('http'); er.status = status; return er; }
@@ -1238,6 +1263,16 @@
             });
         });
 
+        /* muat hash password dari auth.json (jika ada), agar berlaku di semua perangkat */
+        fetch('auth.json', { cache: 'no-store' }).then(function (r) {
+            return r.ok ? r.json() : null;
+        }).then(function (j) {
+            if (j && typeof j.hash === 'string' && /^[0-9a-f]{64}$/.test(j.hash)) {
+                pwHash = j.hash;
+                lsSet(PW_KEY, j.hash);
+            }
+        }).catch(function () {});
+
         /* muat project yang sudah terbit (projects.json), lalu tampilkan */
         document.body.classList.toggle('admin', isAdmin);
         render();
@@ -1255,5 +1290,3 @@
     </script>
 </body>
 </html>
-
-
