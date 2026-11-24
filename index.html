@@ -543,16 +543,15 @@
 
     <!-- ADMIN: login, form project, bar -->
     <div class="modal-ov" id="login-ov" role="dialog" aria-modal="true" aria-labelledby="login-title">
-        <form class="dlg" id="login-form" autocomplete="off">
+        <div class="dlg">
             <h3 id="login-title">SECRET</h3>
             <p class="sub">project automation.</p>
-            <label class="field"><span>Password</span><input type="password" id="login-pw" autocomplete="current-password"></label>
-            <div class="err" id="login-err" role="alert"></div>
+            <p class="sub">Login dengan akun Discord untuk mengelola project.</p>
             <div class="dlg-actions">
                 <button type="button" class="btn ghost" data-close>Cancel</button>
-                <button type="submit" class="btn primary">Login</button>
+                <a class="btn primary" id="discord-login" href="#">Login with Discord</a>
             </div>
-        </form>
+        </div>
     </div>
 
     <div class="modal-ov" id="proj-ov" role="dialog" aria-modal="true" aria-labelledby="proj-title">
@@ -588,7 +587,6 @@
             <label class="field"><span>Repository</span><input type="text" id="set-repo" placeholder="username/nama-repo" autocapitalize="off" spellcheck="false"></label>
             <label class="field"><span>Branch</span><input type="text" id="set-branch" placeholder="main" autocapitalize="off" spellcheck="false"></label>
             <label class="field"><span>Token</span><input type="password" id="set-token" autocomplete="off"></label>
-            <label class="field"><span>Password baru (kosongkan jika tidak diganti, min. 6 karakter)</span><input type="password" id="set-newpw" autocomplete="new-password"></label>
             <div class="err" id="set-err" role="alert"></div>
             <div class="dlg-actions">
                 <button type="button" class="btn ghost" data-close>Cancel</button>
@@ -842,9 +840,7 @@
            Password default: razerr2026  (minta saya ganti kapan saja).
            Project disimpan di browser Anda (draft). Klik "Export" untuk
            menerbitkannya agar terlihat semua pengunjung. */
-        var ADMIN_HASH = 'bc1ae4532b4ddb8fe03a1c794a1958f1bdd9a5642fef4fc64f219820c39f8289';
-        var pwHash = lsGet(PW_KEY) || ADMIN_HASH;
-        var LS_KEY = 'rz_projects', SS_KEY = 'rz_admin', PW_KEY = 'rz_pwhash';
+        var LS_KEY = 'rz_projects', SS_KEY = 'rz_admin';
 
         function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
         function lsSet(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
@@ -971,8 +967,6 @@
 
         /* login */
         var loginOv = document.getElementById('login-ov');
-        var loginPw = document.getElementById('login-pw');
-        var loginErr = document.getElementById('login-err');
 
         function sha256(s) {
             if (!(window.crypto && crypto.subtle)) { return Promise.reject(new Error('nocrypto')); }
@@ -986,27 +980,34 @@
         document.querySelector('.logo').addEventListener('click', function (e) {
             if (isAdmin) { return; }
             e.preventDefault();
-            loginPw.value = ''; loginErr.textContent = '';
             openModal(loginOv);
-            setTimeout(function () { loginPw.focus(); }, 60);
         });
 
-        document.getElementById('login-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-            sha256(loginPw.value).then(function (h) {
-                if (h === pwHash) {
-                    closeModal();
-                    setAdmin(true);
-                    toast('Admin mode aktif');
-                    document.getElementById('gallery').scrollIntoView();
-                } else {
-                    loginErr.textContent = 'Password salah.';
-                    loginPw.select();
-                }
-            }).catch(function () {
-                loginErr.textContent = 'Browser ini tidak mendukung login (butuh HTTPS).';
-            });
-        });
+        /* login Discord: hanya akun dengan ID di bawah ini yang jadi admin */
+        var DISCORD_CLIENT_ID = '1574814361015423127';
+        var DISCORD_REDIRECT = 'https://therazerbuild.pages.dev/';
+        var ADMIN_DISCORD_ID = '751337131192090634';
+        document.getElementById('discord-login').href = 'https://discord.com/oauth2/authorize?client_id=' + DISCORD_CLIENT_ID +
+            '&redirect_uri=' + encodeURIComponent(DISCORD_REDIRECT) + '&response_type=token&scope=identify';
+
+        function finishDiscordLogin() {
+            var tok = new URLSearchParams(location.hash.slice(1)).get('access_token');
+            if (!tok) { return; }
+            history.replaceState(null, '', location.pathname + location.search);
+            fetch('https://discord.com/api/users/@me', { headers: { 'Authorization': 'Bearer ' + tok } })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (u) {
+                    if (u && u.id === ADMIN_DISCORD_ID) {
+                        setAdmin(true);
+                        toast('Login Discord berhasil. Admin mode aktif');
+                        document.getElementById('gallery').scrollIntoView();
+                    } else {
+                        toast('Akun Discord ini tidak diizinkan.', 4000);
+                    }
+                })
+                .catch(function () { toast('Gagal menghubungi Discord. Coba lagi.', 4000); });
+        }
+        finishDiscordLogin();
 
         document.getElementById('ab-logout').addEventListener('click', function () {
             setAdmin(false);
@@ -1141,14 +1142,12 @@
         var setBranch = document.getElementById('set-branch');
         var setToken = document.getElementById('set-token');
         var setErr = document.getElementById('set-err');
-        var setNewPw = document.getElementById('set-newpw');
 
         function openSettings() {
             setRepo.value = ghCfg ? ghCfg.repo : '';
             setBranch.value = ghCfg ? ghCfg.branch : 'main';
             setToken.value = ghCfg ? ghCfg.token : '';
             setErr.textContent = '';
-            setNewPw.value = '';
             openModal(setOv);
         }
         document.getElementById('ab-setup').addEventListener('click', openSettings);
@@ -1158,38 +1157,18 @@
             var repo = setRepo.value.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\.git$/, '').replace(/\/$/, '');
             var branch = setBranch.value.trim() || 'main';
             var token = setToken.value.trim();
-            var newpw = setNewPw.value;
-            if (newpw && newpw.length < 6) { setErr.textContent = 'Password baru minimal 6 karakter.'; return; }
-            var wantGh = !!(repo || token);
-            if (wantGh) {
-                if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { setErr.textContent = 'Format repository: username/nama-repo'; return; }
-                if (!token) { setErr.textContent = 'Token wajib diisi.'; return; }
-                var cfg = { repo: repo, branch: branch, token: token };
-                if (!lsSet(GH_KEY, JSON.stringify(cfg))) { setErr.textContent = 'Gagal menyimpan di browser.'; return; }
-                ghCfg = cfg;
-            } else {
-                lsDel(GH_KEY); ghCfg = null;
-            }
-            if (!newpw) {
-                closeModal();
-                toast(wantGh ? 'Pengaturan tersimpan. Sekarang klik Publish.' : 'Pengaturan dihapus');
+            if (!repo && !token) {
+                lsDel(GH_KEY); ghCfg = null; closeModal();
+                toast('Pengaturan dihapus');
                 return;
             }
-            sha256(newpw).then(function (hh) {
-                lsSet(PW_KEY, hh);
-                pwHash = hh;
-                if (ghCfg) {
-                    var b64 = btoa(JSON.stringify({ hash: hh }));
-                    return ghPut('auth.json', b64, 'Update admin password').then(function () {
-                        closeModal();
-                        toast('Password diganti dan disimpan ke GitHub (berlaku di semua perangkat).', 6000);
-                    });
-                }
-                closeModal();
-                toast('Password diganti, tapi hanya di browser ini. Isi GitHub di Setup agar berlaku di semua perangkat.', 6000);
-            }).catch(function (er) {
-                setErr.textContent = er && er.status ? ghMsg(er) : 'Gagal mengganti password. Coba lagi.';
-            });
+            if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { setErr.textContent = 'Format repository: username/nama-repo'; return; }
+            if (!token) { setErr.textContent = 'Token wajib diisi.'; return; }
+            var cfg = { repo: repo, branch: branch, token: token };
+            if (!lsSet(GH_KEY, JSON.stringify(cfg))) { setErr.textContent = 'Gagal menyimpan di browser.'; return; }
+            ghCfg = cfg;
+            closeModal();
+            toast('Pengaturan tersimpan. Sekarang klik Publish.');
         });
 
         function httpErr(status) { var er = new Error('http'); er.status = status; return er; }
@@ -1262,16 +1241,6 @@
                 publishing = false; btn.disabled = false; btn.textContent = label;
             });
         });
-
-        /* muat hash password dari auth.json (jika ada), agar berlaku di semua perangkat */
-        fetch('auth.json', { cache: 'no-store' }).then(function (r) {
-            return r.ok ? r.json() : null;
-        }).then(function (j) {
-            if (j && typeof j.hash === 'string' && /^[0-9a-f]{64}$/.test(j.hash)) {
-                pwHash = j.hash;
-                lsSet(PW_KEY, j.hash);
-            }
-        }).catch(function () {});
 
         /* muat project yang sudah terbit (projects.json), lalu tampilkan */
         document.body.classList.toggle('admin', isAdmin);
